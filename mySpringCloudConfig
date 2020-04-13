@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: mysteel
+    hikari:
+      maximumPoolSize: 20
+      max-lifetime: 570000
+      connection-test-query: select 1
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://192.168.201.119:3306/data_warehouse?useUnicode=true&characterEncoding=utf8&autoReconnect=true
+  dubbo:
+    server: true
+    registry: zookeeper://dubbo1.banksteel.local:2181?backup=dubbo2.banksteel.local:2182,dubbo3.banksteel.local:2183
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  type-aliases-package: com.banksteel.bigdata.logistics.domain
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-bigdata-0.banksteel-bigdata-eureka-server:8761/eureka/,http://eureka-bigdata-1.banksteel-bigdata-eureka-server:8761/eureka/,http://eureka-bigdata-2.banksteel-bigdata-eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+  threadpool:
+    default:
+      coreSize: 200
+      maxQueueSize: 200
+      queueSizeRejectionThreshold: 50
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
